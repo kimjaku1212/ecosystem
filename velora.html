@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Velora - Emotion-Based Internet Exploration</title>
+    <style>
+        :root {
+            --bg-space: #060713;
+            --bg-card: #0e1126;
+            --border-glow: #1e264d;
+            --text-main: #f1f5f9;
+            --text-muted: #475569;
+            --font-display: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-space);
+            color: var(--text-main);
+            font-family: var(--font-display);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            text-align: center;
+            padding: 40px 20px 20px 20px;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: 300;
+            letter-spacing: 4px;
+            background: linear-gradient(to right, #fff, #94a3b8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        header p {
+            color: #64748b;
+            font-size: 13px;
+            margin-top: 8px;
+            letter-spacing: 0.5px;
+        }
+
+        /* MOOD SELECTOR MATRIX */
+        .mood-selector-bar {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            padding: 0 20px 30px 20px;
+        }
+
+        .mood-chip {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-glow);
+            color: #cbd5e1;
+            padding: 10px 22px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .mood-chip:hover {
+            border-color: #3b4f8c;
+            transform: translateY(-1px);
+        }
+
+        .mood-chip.active {
+            background: linear-gradient(135deg, #1e1b4b, #311042);
+            border-color: #a855f7;
+            color: #f3e8ff;
+            box-shadow: 0 0 15px rgba(168, 85, 247, 0.25);
+        }
+
+        /* MAIN CURATION HUB */
+        .curation-hub {
+            max-width: 900px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 0 20px 40px 20px;
+            box-sizing: border-box;
+            display: none; /* Injected by Javascript state mapping */
+            flex-direction: column;
+            gap: 25px;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); filter: blur(4px); }
+            to { opacity: 1; transform: translateY(0); filter: blur(0); }
+        }
+
+        .showcase-row {
+            display: grid;
+            grid-template-columns: 1.21fr 1fr;
+            gap: 20px;
+        }
+
+        .curation-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-glow);
+            border-radius: 16px;
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .card-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: #a855f7;
+            margin-bottom: 12px;
+            font-weight: bold;
+        }
+
+        .quote-display {
+            font-size: 17px;
+            line-height: 1.7;
+            font-weight: 300;
+            color: #e2e8f0;
+        }
+
+        .media-link-box {
+            background: rgba(6, 7, 19, 0.5);
+            border: 1px dashed #222d54;
+            border-radius: 10px;
+            padding: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        .media-info h4 {
+            margin: 0;
+            font-size: 14px;
+            color: #fff;
+        }
+
+        .media-info p {
+            margin: 4px 0 0 0;
+            font-size: 12px;
+            color: #64748b;
+        }
+
+        .action-icon-btn {
+            background-color: #1e254a;
+            color: #00fff0;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        /* PALETTE BOX STRUCTURE */
+        .palette-swatches {
+            display: flex;
+            gap: 10px;
+            margin-top: 5px;
+        }
+
+        .swatch {
+            flex: 1;
+            height: 45px;
+            border-radius: 8px;
+            position: relative;
+        }
+
+        /* INTRO VIEW WRAPPER */
+        .intro-placeholder {
+            text-align: center;
+            color: #475569;
+            margin: auto;
+            font-size: 14px;
+            max-width: 320px;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>VELORA</h1>
+        <p>Atmospheric Discovery &mdash; Filter the web down to your exact headspace.</p>
+    </header>
+
+    <div class="mood-selector-bar">
+        <div class="mood-chip" onclick="executeAtmosphericCuration(this, 'rainy')">🌧️ Lonely Rainy Night</div>
+        <div class="mood-chip" onclick="executeAtmosphericCuration(this, 'daylight')">✨ Ethereal Daylight</div>
+        <div class="mood-chip" onclick="executeAtmosphericCuration(this, 'nostalgia')">📼 Retro Nostalgia Vibe</div>
+    </div>
+
+    <div class="intro-placeholder" id="placeholderView">
+        <div style="font-size: 32px; margin-bottom: 10px;">🌌</div>
+        Select an emotional vibe profile above to clear algorithm noise and align the aesthetic exploration engine.
+    </div>
+
+    <div class="curation-hub" id="curationHub">
+        </div>
+
+    <script>
+        // Immersive atmosphere index database configuration mapping
+        const vibeIndex = {
+            rainy: {
+                quote: "\"There is a quiet texture to the city when the rain matches the stillness inside you. Everything performance-based washes away.\"",
+                audioTitle: "Midnight Rain in Tokyo",
+                audioDesc: "Lo-Fi Vinyl Crackle + Soft Piano Progressions",
+                visualDesc: "Neon reflection pooling on dark asphalt under misty conditions.",
+                colors: ["#090d16", "#1e1b4b", "#3b0764", "#020617"]
+            },
+            daylight: {
+                quote: "\"Golden dust motes floating through sheer linen curtains. The internet doesn't have to be loud to feel alive.\"",
+                audioTitle: "Morning Ambient Frequencies",
+                audioDesc: "Warm Synth Swells + Ethereal Choir Textures",
+                visualDesc: "Overexposed sun-flares piercing clean architectural geometry.",
+                colors: ["#fef08a", "#fef9c3", "#f8fafc", "#e2e8f0"]
+            },
+            nostalgia: {
+                quote: "\"A memory of a place you’ve never actually been, captured on magnetic tape and static fuzz.\"",
+                audioTitle: "1998 Vaporwave Echoes",
+                audioDesc: "Chapped Cassette Tape Hiss + Detuned Synth Leads",
+                visualDesc: "Aesthetic low-poly wireframes and neon-pink grids fading into twilight.",
+                colors: ["#ff007a", "#00fff0", "#120e2e", "#241442"]
+            }
+        };
+
+        function executeAtmosphericCuration(chip, vibeKey) {
+            // Manage clean-slate active classes across tabs
+            document.querySelectorAll('.mood-chip').forEach(c => c.classList.remove('active'));
+            chip.classList.add('active');
+
+            // Toggle viewport visibility frameworks
+            document.getElementById('placeholderView').style.display = 'none';
+            const hub = document.getElementById('curationHub');
+            hub.style.display = 'flex';
+
+            const activeData = vibeIndex[vibeKey];
+
+            // Inject targeted curated components dynamically
+            hub.innerHTML = `
+                <div class="showcase-row">
+                    <div class="curation-card">
+                        <div class="card-label">📝 Textual Resonance Anchor</div>
+                        <div class="quote-display">${activeData.quote}</div>
+                    </div>
+                    
+                    <div class="curation-card">
+                        <div class="card-label">🎵 Matching Audio Spectrum</div>
+                        <div class="media-link-box">
+                            <div class="media-info">
+                                <h4>${activeData.audioTitle}</h4>
+                                <p>${activeData.audioDesc}</p>
+                            </div>
+                            <button class="action-icon-btn" onclick="alert('Simulating soundscape initialization...')">Play</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="curation-card">
+                    <div class="card-label">🖼️ Curated Visual Framing Spec</div>
+                    <p style="margin: 0 0 15px 0; font-size: 14.5px; line-height: 1.6; color: #cbd5e1;">
+                        ${activeData.visualDesc}
+                    </p>
+                    <div class="card-label" style="font-size: 10px; color: #64748b; margin-bottom: 8px;">Aesthetic Atmosphere Swatch Matrix</div>
+                    <div class="palette-swatches">
+                        ${activeData.colors.map(col => `<div class="swatch" style="background-color: ${col}; border: 1px solid rgba(255,255,255,0.1);"></div>`).join('')}
+                    </div>
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html>

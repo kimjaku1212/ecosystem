@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Somnia - Subconscious Dream Archive</title>
+    <style>
+        :root {
+            --bg-dream: #03040b;
+            --bg-panel: #0a0c16;
+            --bg-card: #12162b;
+            --neon-pink: #ff007a;
+            --neon-blue: #00fff0;
+            --text-main: #f1f5f9;
+            --text-muted: #475569;
+            --font-display: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-dream);
+            color: var(--text-main);
+            font-family: var(--font-display);
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        header {
+            background-color: var(--bg-panel);
+            padding: 15px 30px;
+            border-bottom: 1px solid #1e264d;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 20px;
+            font-weight: 400;
+            letter-spacing: 4px;
+            background: linear-gradient(45deg, var(--neon-pink), var(--neon-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .archive-counter {
+            font-size: 12px;
+            color: var(--neon-blue);
+            font-family: monospace;
+            border: 1px solid rgba(0, 255, 240, 0.2);
+            padding: 4px 12px;
+            border-radius: 20px;
+            background: rgba(0, 255, 240, 0.05);
+        }
+
+        .app-workspace {
+            display: flex;
+            flex: 1;
+            height: calc(100vh - 54px);
+            overflow: hidden;
+        }
+
+        /* LEFT JOURNAL CAPTURE CORE */
+        .journal-side {
+            width: 360px;
+            background-color: var(--bg-panel);
+            border-right: 1px solid #1e264d;
+            padding: 25px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            overflow-y: auto;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .input-group label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #64748b;
+            font-weight: bold;
+        }
+
+        .dream-textarea {
+            width: 100%;
+            height: 120px;
+            background-color: var(--bg-dream);
+            border: 1px solid #1e264d;
+            border-radius: 10px;
+            padding: 12px;
+            color: #fff;
+            resize: none;
+            outline: none;
+            font-family: inherit;
+            box-sizing: border-box;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .dream-textarea:focus {
+            border-color: var(--neon-pink);
+        }
+
+        .slider-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .select-input {
+            background: var(--bg-dream);
+            color: #fff;
+            border: 1px solid #1e264d;
+            padding: 8px;
+            border-radius: 6px;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .archive-btn {
+            background: linear-gradient(45deg, var(--neon-pink), var(--neon-blue));
+            color: #fff;
+            border: none;
+            padding: 14px;
+            border-radius: 10px;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: opacity 0.2s;
+        }
+
+        .archive-btn:hover {
+            opacity: 0.9;
+        }
+
+        /* RIGHT TIMELINE MUSEUM DISPLAY */
+        .archive-display {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .dream-vault-title {
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #64748b;
+            border-bottom: 1px dashed #1e264d;
+            padding-bottom: 10px;
+            margin-bottom: 10px;
+        }
+
+        .dream-card {
+            background-color: var(--bg-card);
+            border: 1px solid #1e264d;
+            border-radius: 16px;
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            animation: emerge 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes emerge {
+            from { opacity: 0; transform: translateY(15px); filter: blur(5px); }
+            to { opacity: 1; transform: translateY(0); filter: blur(0); }
+        }
+
+        .card-meta-line {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: var(--neon-blue);
+            font-family: monospace;
+        }
+
+        .dream-text-body {
+            font-size: 15px;
+            line-height: 1.6;
+            color: #cbd5e1;
+            font-style: italic;
+        }
+
+        /* MOCK AI VISUALIZATION GRAPHICS BOX */
+        .ai-canvas-simulation {
+            height: 110px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            font-weight: bold;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .viz-lucid { background: linear-gradient(135deg, #09203f, #537895); color: #00fff0; }
+        .viz-nightmare { background: linear-gradient(135deg, #130cb7, #520066); color: #ff007a; }
+        .viz-abstract { background: linear-gradient(135deg, #2c3e50, #000000); color: #94a3b8; }
+
+        .no-dreams-msg {
+            text-align: center;
+            color: #475569;
+            margin: auto;
+            font-size: 14px;
+            max-width: 320px;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>SOMNIA</h1>
+        <div class="archive-counter" id="archiveCount">Vault Balance: 1 Synced</div>
+    </header>
+
+    <div class="app-workspace">
+        <div class="journal-side">
+            <div class="input-group">
+                <label>Subconscious Mind Dump</label>
+                <textarea class="dream-textarea" id="dreamInput" placeholder="Describe everything you remember before the details evaporate... the colors, the sensations, the layout..."></textarea>
+            </div>
+
+            <div class="input-group">
+                <label>Dream Typology</label>
+                <select class="select-input" id="typeInput">
+                    <option value="lucid">🔮 Vivid / Lucid Stream</option>
+                    <option value="nightmare">⚡ High Intensity / Nightmare</option>
+                    <option value="abstract">🌀 Deep Subconscious Abstract</option>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label>Emotional Residue</label>
+                <select class="select-input" id="emotionInput">
+                    <option value="Calm">Serene / Peaceful</option>
+                    <option value="Anxious">Unsettled / Chased</option>
+                    <option value="Confused">Mystified / Disoriented</option>
+                </select>
+            </div>
+
+            <button class="archive-btn" onclick="commitDreamToArchive()">Visualize & Archive</button>
+        </div>
+
+        <div class="archive-display" id="archiveDisplay">
+            <div class="dream-vault-title">🌌 Subconscious Timeline Archives</div>
+            
+            <div id="timelineTarget">
+                <div class="dream-card">
+                    <div class="card-meta-line">
+                        <span>TYPE: 🔮 VIVID / LUCID STREAM</span>
+                        <span>RESIDUE: SERENE / PEACEFUL</span>
+                    </div>
+                    <div class="dream-text-body">
+                        "I was walking through an infinite neon greenhouse floating out in deep space. Water droplets were drifting upwards upside down, and every time they touched a glass panel, they turned into soft piano chords."
+                    </div>
+                    <div class="ai-canvas-simulation viz-lucid">
+                        ✨ Subconscious AI Rendering Engine Triggered
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let counterTracker = 1;
+
+        function commitDreamToArchive() {
+            const textValue = document.getElementById('dreamInput').value.trim();
+            const typeValue = document.getElementById('typeInput').value;
+            const emotionValue = document.getElementById('emotionInput').value;
+
+            if(!textValue) { alert("Capture your subconscious narrative track first!"); return; }
+
+            const target = document.getElementById('timelineTarget');
+            const card = document.createElement('div');
+            card.className = 'dream-card';
+
+            // Establish visualization canvas profile class handles match-ups
+            let canvasThemeClass = "viz-abstract";
+            if(typeValue === "lucid") canvasThemeClass = "viz-lucid";
+            if(typeValue === "nightmare") canvasThemeClass = "viz-nightmare";
+
+            card.innerHTML = `
+                <div class="card-meta-line">
+                    <span>TYPE: ${typeValue.toUpperCase()}</span>
+                    <span>RESIDUE: ${emotionValue.toUpperCase()}</span>
+                </div>
+                <div class="dream-text-body">"${textValue}"</div>
+                <div class="ai-canvas-simulation ${canvasThemeClass}">
+                    ✨ Subconscious AI Rendering Engine Triggered
+                </div>
+            `;
+
+            target.insertBefore(card, target.firstChild);
+            
+            // Increment interface dashboard counters smoothly
+            counterTracker++;
+            document.getElementById('archiveCount').innerText = `Vault Balance: ${counterTracker} Synced`;
+            
+            // Reset input slate values
+            document.getElementById('dreamInput').value = '';
+        }
+    </script>
+</body>
+</html>

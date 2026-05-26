@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mirrora - Identity Mirror Engine</title>
+    <style>
+        :root {
+            --bg-abyss: #040508;
+            --bg-parchment: #0c0e14;
+            --border-mirror: #1a1f2c;
+            --neon-silver: #e2e8f0;
+            --neon-purple: #8b5cf6;
+            --text-novel: #94a3b8;
+            --font-serif: Georgia, Cambria, "Times New Roman", Times, serif;
+            --font-sans: -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-abyss);
+            color: var(--text-novel);
+            font-family: var(--font-sans);
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        header {
+            background-color: var(--bg-parchment);
+            padding: 15px 35px;
+            border-bottom: 1px solid var(--border-mirror);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 300;
+            letter-spacing: 4px;
+            color: var(--neon-silver);
+        }
+
+        .status-pill {
+            font-size: 11px;
+            font-family: monospace;
+            color: var(--neon-purple);
+            background: rgba(139, 92, 246, 0.08);
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            padding: 4px 12px;
+            border-radius: 4px;
+        }
+
+        .engine-room {
+            display: flex;
+            flex: 1;
+            height: calc(100vh - 53px);
+            overflow: hidden;
+        }
+
+        /* LEFT PANEL: MOMENTUM THROTTLE MECHANICS */
+        .control-dock {
+            width: 320px;
+            background-color: var(--bg-parchment);
+            border-right: 1px solid var(--border-mirror);
+            padding: 25px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            overflow-y: auto;
+        }
+
+        .dock-header {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: #475569;
+            font-weight: bold;
+            margin-bottom: -5px;
+        }
+
+        .slider-box {
+            background-color: var(--bg-abyss);
+            border: 1px solid var(--border-mirror);
+            border-radius: 10px;
+            padding: 16px;
+        }
+
+        .slider-box label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: var(--neon-silver);
+            margin-bottom: 8px;
+        }
+
+        .momentum-slider {
+            width: 100%;
+            accent-color: var(--neon-purple);
+            cursor: pointer;
+        }
+
+        .slider-caption {
+            font-size: 11px;
+            color: #475569;
+            margin-top: 6px;
+            display: block;
+            line-height: 1.4;
+        }
+
+        .reflection-input {
+            width: 100%;
+            height: 90px;
+            background-color: var(--bg-abyss);
+            border: 1px solid var(--border-mirror);
+            border-radius: 8px;
+            padding: 12px;
+            color: #fff;
+            resize: none;
+            outline: none;
+            font-family: inherit;
+            box-sizing: border-box;
+            font-size: 13.5px;
+            line-height: 1.5;
+        }
+
+        .reflection-input:focus {
+            border-color: var(--neon-purple);
+        }
+
+        .transmit-btn {
+            background: transparent;
+            border: 1px solid var(--neon-purple);
+            color: #c084fc;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .transmit-btn:hover {
+            background: rgba(139, 92, 246, 0.1);
+            box-shadow: 0 0 15px rgba(139, 92, 246, 0.15);
+        }
+
+        /* RIGHT PANEL: IMMERSIVE NOVELIZATION CANVAS */
+        .novel-canvas {
+            flex: 1;
+            padding: 50px 80px;
+            overflow-y: auto;
+            box-sizing: border-box;
+            background: radial-gradient(circle at top, #090a10 0%, var(--bg-abyss) 100%);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .novel-layout-box {
+            max-width: 650px;
+            width: 100%;
+            margin: 0 auto;
+            font-family: var(--font-serif);
+            font-size: 17px;
+            line-height: 1.9;
+            color: #cbd5e1;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .novel-paragraph {
+            animation: textReveal 0.8s ease-out forwards;
+            text-indent: 30px;
+            margin: 0;
+        }
+
+        @keyframes textReveal {
+            from { opacity: 0; transform: translateY(4px); filter: blur(2px); }
+            to { opacity: 1; transform: translateY(0); filter: blur(0); }
+        }
+
+        .system-thought {
+            color: #64748b;
+            font-family: var(--font-sans);
+            font-size: 13px;
+            font-style: italic;
+            text-align: center;
+            text-indent: 0;
+            margin: 15px 0;
+            letter-spacing: 0.5px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>MIRRORA</h1>
+        <div class="status-pill">Memory Matrix: Persistent</div>
+    </header>
+
+    <div class="engine-room">
+        <div class="control-dock">
+            <div class="dock-header">Pacing Mechanics</div>
+
+            <div class="slider-box">
+                <label>
+                    <span>Momentum Throttle</span>
+                    <span id="sliderLabel" style="color: var(--neon-purple); font-weight: bold;">Slow Burn</span>
+                </label>
+                <input type="range" min="1" max="3" value="1" class="momentum-slider" id="momentumRange" oninput="adjustPacingMetrics()">
+                <span class="slider-caption" id="sliderDesc">Forces long, descriptive narrative structures. Prevents the engine from rushing personal realizations too fast.</span>
+            </div>
+
+            <div class="dock-header">Self-Reflection Feed</div>
+            <textarea class="reflection-input" id="reflectionInput" placeholder="Pour out what's heavy in your mind right now... don't filter it or structure it..."></textarea>
+            
+            <button class="transmit-btn" onclick="processIdentityMirroring()">Weave Into Narrative</button>
+        </div>
+
+        <div class="novel-canvas">
+            <div class="novel-layout-box" id="novelBox">
+                <p class="novel-paragraph">The cursor blinked against the screen, a quiet witness to another midnight passing. The outside world had turned down its volume completely, leaving only the soft hum of cooling fans and a mind working through its own tangled blueprints.</p>
+                <div class="system-thought">[ Engine initialization complete. Awaiting user reflection track... ]</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function adjustPacingMetrics() {
+            const val = document.getElementById('momentumRange').value;
+            const label = document.getElementById('sliderLabel');
+            const desc = document.getElementById('sliderDesc');
+
+            if(val == "1") {
+                label.innerText = "Slow Burn";
+                desc.innerText = "Forces long, descriptive narrative structures. Prevents the engine from rushing personal realizations too fast.";
+            } else if (val == "2") {
+                label.innerText = "Balanced Reflection";
+                desc.innerText = "Equal parts environment building and direct emotional confrontation loopback formatting.";
+            } else {
+                label.innerText = "Cathartic Climax";
+                desc.innerText = "Throttles the system to dive aggressively into core insights, breaking through defense mechanisms.";
+            }
+        }
+
+        function processIdentityMirroring() {
+            const inputVal = document.getElementById('reflectionInput').value.trim();
+            if(!inputVal) { alert("Speak to the mirror first."); return; }
+
+            const momentum = document.getElementById('momentumRange').value;
+            const novelBox = document.getElementById('novelBox');
+
+            // Formulate dynamic narrative echoes based on the momentum state
+            let responseParagraph = "";
+            if(momentum == "1") {
+                responseParagraph = `They confessed to the silence: "${inputVal}". The engine paused, gathering the context layer by layer. It did not offer standard corporate reassurances. Instead, the room felt slightly larger, holding space for the weight of those exact words to drift and settle into the prose.`;
+            } else if (momentum == "2") {
+                responseParagraph = `Tracing the thought pattern behind "${inputVal}", a clear realization began to surface. It was the familiar tension of a creator standing between a massive ecosystem of plans and the quiet execution of the very next step.`;
+            } else {
+                responseParagraph = `The defensive layers cracked entirely open under the statement: "${inputVal}". No more avoiding it. The core friction wasn't a lack of tools, talent, or strategy—it was the profound exhaustion of holding multiple complete worlds inside one human mind at the exact same time.`;
+            }
+
+            // Create and append the user block
+            const userPara = document.createElement('p');
+            userPara.className = 'novel-paragraph';
+            userPara.style.color = '#e2e8f0';
+            userPara.innerText = `— ${inputVal}`;
+
+            // Create and append the engine echo block
+            const enginePara = document.createElement('p');
+            enginePara.className = 'novel-paragraph';
+            enginePara.innerText = responseParagraph;
+
+            novelBox.appendChild(userPara);
+            
+            // Delayed injection simulation for fluid reading cadence
+            setTimeout(() => {
+                novelBox.appendChild(enginePara);
+                // Scroll down smoothly to capture newly rendered passages
+                document.querySelector('.novel-canvas').scrollTop = document.querySelector('.novel-canvas').scrollHeight;
+            }, 400);
+
+            // Clear input channel
+            document.getElementById('reflectionInput').value = '';
+        }
+    </script>
+</body>
+</html>

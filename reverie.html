@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reverie Prototype - AI Narrative Control Dashboard</title>
+    <style>
+        :root {
+            --bg-main: #090b11;
+            --bg-panel: #131722;
+            --bg-chat-user: #242b3d;
+            --bg-chat-bot: #1c2333;
+            --accent-glow: #7c4dff;
+            --text-light: #e2e8f0;
+            --text-dark: #94a3b8;
+            --font-serif: 'Georgia', serif;
+            --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-light);
+            font-family: var(--font-sans);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        header {
+            background-color: var(--bg-panel);
+            padding: 15px 25px;
+            border-bottom: 1px solid #222d42;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 20px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            background: linear-gradient(45deg, #a78bfa, #7c4dff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .pitch-tag {
+            background-color: rgba(124, 77, 255, 0.2);
+            border: 1px solid var(--accent-glow);
+            color: #c0a5ff;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .main-container {
+            display: flex;
+            flex: 1;
+            height: calc(100vh - 55px);
+            overflow: hidden;
+        }
+
+        /* LEFT SIDE: CHAT ENGINE */
+        .chat-section {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid #222d42;
+            background-color: var(--bg-main);
+            position: relative;
+        }
+
+        .control-bar {
+            background-color: var(--bg-panel);
+            padding: 15px 20px;
+            border-bottom: 1px solid #222d42;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .slider-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            color: var(--text-dark);
+            font-weight: 500;
+        }
+
+        .slider-container {
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+
+        .momentum-slider {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 6px;
+            border-radius: 5px;
+            background: #222d42;
+            outline: none;
+            transition: background 0.3s;
+        }
+
+        .momentum-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--accent-glow);
+            cursor: pointer;
+            box-shadow: 0 0 10px var(--accent-glow);
+        }
+
+        .chat-history {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .message {
+            max-width: 75%;
+            padding: 12px 16px;
+            border-radius: 12px;
+            line-height: 1.5;
+            font-size: 14px;
+        }
+
+        .message.bot {
+            background-color: var(--bg-chat-bot);
+            align-self: flex-start;
+            border: 1px solid #1e293b;
+        }
+
+        .message.user {
+            background-color: var(--bg-chat-user);
+            align-self: flex-end;
+            color: #fff;
+        }
+
+        .input-area {
+            padding: 20px;
+            background-color: var(--bg-panel);
+            border-top: 1px solid #222d42;
+            display: flex;
+            gap: 10px;
+        }
+
+        .input-area input {
+            flex: 1;
+            background-color: var(--bg-main);
+            border: 1px solid #222d42;
+            border-radius: 8px;
+            padding: 12px;
+            color: var(--text-light);
+            outline: none;
+            font-size: 14px;
+        }
+
+        .input-area button {
+            background-color: var(--accent-glow);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 0 20px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: opacity 0.2s;
+        }
+
+        .input-area button:hover {
+            opacity: 0.9;
+        }
+
+        /* RIGHT SIDE: NOVELIZATION ENGINE */
+        .novel-section {
+            flex: 1;
+            background-color: #0d0f14;
+            display: flex;
+            flex-direction: column;
+            padding: 30px;
+            overflow-y: auto;
+        }
+
+        .novel-header {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: #6366f1;
+            margin-bottom: 20px;
+            font-weight: 700;
+            border-bottom: 1px dashed #222d42;
+            padding-bottom: 10px;
+        }
+
+        .novel-body {
+            font-family: var(--font-serif);
+            font-size: 17px;
+            line-height: 1.8;
+            color: #d1d5db;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .novel-para {
+            margin-bottom: 24px;
+            text-align: justify;
+        }
+
+        .novel-dialogue {
+            color: #fff;
+            font-weight: 500;
+        }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-main);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #222d42;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Reverie Strategy Wireframe</h1>
+        <div class="pitch-tag">Product Intern Spec Layout</div>
+    </header>
+
+    <div class="main-container">
+        
+        <div class="chat-section">
+            <div class="control-bar">
+                <div class="slider-label">
+                    <span>Narrative Momentum Engine (Context Multiplier)</span>
+                    <span id="slider-status" style="color: #a78bfa; font-weight: bold;">Slow Burn (Pacing Log: 1)</span>
+                </div>
+                <div class="slider-container">
+                    <input type="range" min="1" max="3" value="1" class="momentum-slider" id="momentumRange">
+                </div>
+            </div>
+
+            <div class="chat-history" id="chatHistory">
+                <div class="message bot">
+                    The dark hallways of the library are completely silent. I notice you looking through the restricted historical files. "Are you looking for something specific, or just lost?" I ask, stepping out from the shadow of the bookshelf.
+                </div>
+            </div>
+
+            <div class="input-area">
+                <input type="text" id="userInput" placeholder="Type your response to direct the story...">
+                <button id="sendBtn">Send</button>
+            </div>
+        </div>
+
+        <div class="novel-section">
+            <div class="novel-header">Automatic Novelization Engine Thread (Zero Chat-Bubble Friction)</div>
+            <div class="novel-body" id="novelBody">
+                <div class="novel-para">
+                    The dark hallways of the old campus library were completely silent, save for the faint rustle of turning pages. Shadows danced across the walls as a lone figure examined the restricted historical records. Suddenly, a voice broke the stillness. Stepping out from the deep obscurity of a tall oak bookshelf, he asked quietly, <span class="novel-dialogue">"Are you looking for something specific, or just lost?"</span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        const slider = document.getElementById('momentumRange');
+        const sliderStatus = document.getElementById('slider-status');
+        const chatHistory = document.getElementById('chatHistory');
+        const novelBody = document.getElementById('novelBody');
+        const userInput = document.getElementById('userInput');
+        const sendBtn = document.getElementById('sendBtn');
+
+        const states = {
+            1: { name: "Slow Burn (Pacing Log: 1)", color: "#a78bfa" },
+            2: { name: "Rising Action (Pacing Log: 2)", color: "#fbbf24" },
+            3: { name: "Peak Intensity / Climax (Pacing Log: 3)", color: "#ef4444" }
+        };
+
+        // Static script replies mapping to user interactions and states to simulate memory tracking
+        const simulatedBotReplies = {
+            1: {
+                chat: "I cross my arms, watching you close the book. 'Secrets tend to stay hidden in this section for a reason. Be careful what path you decide to dig up.'",
+                novel: "He crossed his arms, leaning back slightly against the cold wood structure while watching the heavy book slam shut. His eyes tracked every subtle expression. <span class='novel-dialogue'>\"Secrets tend to stay hidden in this section for a reason,\"</span> he warned softly, his voice dropping an octave as the atmosphere grew thick. <span class='novel-dialogue'>\"Be careful what path you decide to dig up.\"</span>"
+            },
+            2: {
+                chat: "I step forward quickly, taking the ledger straight out of your hands before you can close it. 'You shouldn't have seen this name. Who sent you here?'",
+                novel: "Before the leather-bound book could slide away, he stepped forward with striking velocity. His hand swept out, capturing the ledger directly out of the user's grip. The ambient air shifted violently as he looked down at the open page. <span class='novel-dialogue'>\"You shouldn't have seen this name,\"</span> he demanded, pinning the moment with sudden severity. <span class='novel-dialogue'>\"Who sent you here?\"</span>"
+            },
+            3: {
+                chat: "I slam my hand flat against the bookshelf right next to your head, blocking your exit completely. 'Don't try to play innocent with me. Tell me the truth right now.'",
+                novel: "There was no room left for evasion. In one fluid, heavy movement, he slammed his hand flat against the structural wood of the bookshelf, right next to the user's face. The physical trap was absolute, cutting off any trajectory of retreat as his focus locked on. <span class='novel-dialogue'>\"Don't try to play innocent with me,\"</span> he hissed, letting the absolute intensity of the confrontation echo through the dark aisle. <span class='novel-dialogue'>\"Tell me the truth right now.\"</span>"
+            }
+        };
+
+        slider.addEventListener('input', function() {
+            const currentVal = slider.value;
+            sliderStatus.innerText = states[currentVal].name;
+            sliderStatus.style.color = states[currentVal].color;
+        });
+
+        function handleSend() {
+            const text = userInput.value.trim();
+            if(!text) return;
+
+            // 1. Append User Chat Bubble
+            const userMsg = document.createElement('div');
+            userMsg.className = 'message user';
+            userMsg.innerText = text;
+            chatHistory.appendChild(userMsg);
+
+            // 2. Determine current slider state setting
+            const momentumSetting = slider.value;
+            const contextData = simulatedBotReplies[momentumSetting];
+
+            // 3. Append Character Simulation Response
+            setTimeout(() => {
+                const botMsg = document.createElement('div');
+                botMsg.className = 'message bot';
+                botMsg.innerText = contextData.chat;
+                chatHistory.appendChild(botMsg);
+                chatHistory.scrollTop = chatHistory.scrollHeight;
+
+                // 4. Transform raw transaction into structural descriptive prose (Novelization)
+                const newPara = document.createElement('div');
+                newPara.className = 'novel-para';
+                newPara.innerHTML = `Responding to the statement, <em>"${text}"</em>, the narrative adjusted seamlessly to a <strong>Level ${momentumSetting}</strong> momentum profile. ${contextData.novel}`;
+                novelBody.appendChild(newPara);
+                novelBody.scrollTop = novelBody.scrollHeight;
+            }, 600);
+
+            userInput.value = '';
+        }
+
+        sendBtn.addEventListener('click', handleSend);
+        userInput.addEventListener('keypress', function(e) {
+            if(e.key === 'Enter') handleSend();
+        });
+    </script>
+</body>
+</html>

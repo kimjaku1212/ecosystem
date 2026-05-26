@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Future Navigator - Career Trajectory Simulator</title>
+    <style>
+        :root {
+            --bg-dark: #060814;
+            --bg-surface: #0e1124;
+            --bg-card: #171c38;
+            --neon-cyan: #00fff0;
+            --neon-purple: #a855f7;
+            --text-main: #f8fafc;
+            --text-muted: #64748b;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        header {
+            background-color: var(--bg-surface);
+            padding: 15px 35px;
+            border-bottom: 1px solid #1e254a;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 20px;
+            font-weight: 700;
+            background: linear-gradient(45deg, var(--neon-cyan), var(--neon-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 0.5px;
+        }
+
+        .premium-tag {
+            background: rgba(168, 85, 247, 0.15);
+            border: 1px solid var(--neon-purple);
+            color: #d8b4fe;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        .app-layout {
+            display: flex;
+            flex: 1;
+            height: calc(100vh - 55px);
+            overflow: hidden;
+        }
+
+        /* LEFT CONTROLLER PANEL */
+        .control-panel {
+            width: 340px;
+            background-color: var(--bg-surface);
+            border-right: 1px solid #1e254a;
+            padding: 25px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            overflow-y: auto;
+        }
+
+        .panel-section h3 {
+            margin: 0 0 10px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--neon-cyan);
+        }
+
+        .select-input, .text-input {
+            width: 100%;
+            background-color: var(--bg-dark);
+            border: 1px solid #1e254a;
+            border-radius: 8px;
+            padding: 12px;
+            color: white;
+            outline: none;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+
+        .simulate-btn {
+            background: linear-gradient(45deg, var(--neon-cyan), var(--neon-purple));
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 14px;
+            border-radius: 10px;
+            font-weight: bold;
+            font-size: 15px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 255, 240, 0.15);
+            transition: opacity 0.2s;
+            margin-top: 10px;
+        }
+
+        .simulate-btn:hover {
+            opacity: 0.9;
+        }
+
+        /* RIGHT MATRIX DISPLAY DESK */
+        .display-desk {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .trajectory-title-row {
+            border-bottom: 1px dashed #1e254a;
+            padding-bottom: 15px;
+        }
+
+        .trajectory-title-row h2 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .trajectory-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .metric-box {
+            background-color: var(--bg-surface);
+            border: 1px solid #1e254a;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .metric-box div:first-child {
+            font-size: 11px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+        }
+
+        .metric-box div:last-child {
+            font-size: 22px;
+            font-weight: 800;
+            color: #fff;
+        }
+
+        .branch-timeline-card {
+            background-color: var(--bg-surface);
+            border-left: 4px solid var(--neon-purple);
+            border-radius: 0 12px 12px 0;
+            padding: 25px;
+            border-top: 1px solid #1e254a;
+            border-right: 1px solid #1e254a;
+            border-bottom: 1px solid #1e254a;
+        }
+
+        .branch-step {
+            margin-bottom: 20px;
+            position: relative;
+            padding-left: 20px;
+        }
+
+        .branch-step::before {
+            content: '●';
+            position: absolute;
+            left: 0;
+            color: var(--neon-cyan);
+        }
+
+        .branch-step:last-child {
+            margin-bottom: 0;
+        }
+
+        .step-year {
+            font-size: 12px;
+            font-weight: bold;
+            color: var(--neon-cyan);
+            font-family: monospace;
+        }
+
+        .step-desc {
+            font-size: 14.5px;
+            line-height: 1.6;
+            margin-top: 4px;
+            color: #cbd5e1;
+        }
+
+        /* DEFAULT PLACEHOLDER SCREEN */
+        .empty-placeholder {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>🔮 Future Navigator</h1>
+        <div class="premium-tag">🤖 Predictive AI Core Online</div>
+    </header>
+
+    <div class="app-layout">
+        <div class="control-panel">
+            <div class="panel-section">
+                <h3>Select Macro Path</h3>
+                <select class="select-input" id="pathSelection">
+                    <option value="tech">Software Architect / AI Specialist</option>
+                    <option value="indie">Indie Solopreneur / Product Builder</option>
+                    <option value="corp">Corporate Product Strategy (Big Tech)</option>
+                </select>
+            </div>
+
+            <div class="panel-section">
+                <h3>Target Market Tier</h3>
+                <select class="select-input" id="tierSelection">
+                    <option value="tier1">Tier 1 Metro Market (Bangalore / SF)</option>
+                    <option value="remote">Global Remote (US Dollars / India Base)</option>
+                    <option value="tier2">Tier 2 Incubation Hub</option>
+                </select>
+            </div>
+
+            <div class="panel-section">
+                <h3>Risk Strategy Profile</h3>
+                <select class="select-input" id="riskSelection">
+                    <option value="high">High Velocity (Aggressive Job Hops / Startups)</option>
+                    <option value="moderate">Calculated Compound (Steady Equity/Growth)</option>
+                </select>
+            </div>
+
+            <button class="simulate-btn" onclick="runFutureSimulation()">Compute Multi-Decade Branch</button>
+        </div>
+
+        <div class="display-desk" id="displayDesk">
+            <div class="empty-placeholder">
+                <div style="font-size: 48px; margin-bottom: 15px;">🔮</div>
+                <h3 style="color: #fff; margin: 0 0 8px 0;">Awaiting Simulation Vector Inputs</h3>
+                <p style="margin: 0; font-size: 14px; max-width: 340px;">Select your macro professional paths and risk configurations on the left panel to execute multi-decade predictive branch mapping.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Structural simulation output configuration templates
+        const pathMatrices = {
+            tech: {
+                title: "Software System & Artificial Intelligence Track",
+                tagline: "Maximizing technical infrastructure capability and global engineering leverage.",
+                metrics: { salary: "₹36 - 85 LPA", stability: "High", burnout: "Moderate" },
+                steps: [
+                    { year: "Years 1 - 3 (The Assembly Line)", desc: "Enter as an Associate Systems Engineer in an elite scaleup. Direct AI engineering systems to manage boilerplate pipelines while mastering system optimization and high-load backend architecture configurations." },
+                    { year: "Years 4 - 6 (The Technical Nexus)", desc: "Pivot using aggressive velocity hopping into a Staff Engineering role or AI Tech Lead position. Base compensation shifts to high-margin global stock packages." },
+                    { year: "Years 7 - 10+ (The Architect Summit)", desc: "Transition into Principal Enterprise Consultant or Chief Technical Officer (CTO). You no longer direct single applications; you engineer whole engineering structural divisions." }
+                ]
+            },
+            indie: {
+                title: "Indie Solopreneur & Product Builder System",
+                tagline: "Trading corporate predictability for high-margin personal distribution equity.",
+                metrics: { salary: "₹0 - 2.4 Crore/yr", stability: "Highly Volatile", burnout: "High" },
+                steps: [
+                    { year: "Years 1 - 2 (The Sweat Equity Window)", desc: "Sustain extreme product velocity. Use advanced generation engines to deploy dozens of highly targeted client-side micro-utilities (SaaS tools) until two concepts strike absolute Product-Market Fit." },
+                    { year: "Years 3 - 5 (The Asset Scale)", desc: "Automate user expansion models. Convert high-retention properties (like custom fan applications or niche community hubs) into recursive subscription cash flow channels with 95%+ profit margins." },
+                    { year: "Years 6 - 10+ (The Exit Phase)", desc: "Transition from micro-operator to automated system orchestrator. Quietly sell or package non-core assets to private equity firms while working exclusively on massive global macro visions." }
+                ]
+            },
+            corp: {
+                title: "Corporate Product Strategy & Management Division",
+                tagline: "Operating within high-capital structures to direct user attention loops.",
+                metrics: { salary: "₹45 - 95 LPA", stability: "Very High", burnout: "Calculated" },
+                steps: [
+                    { year: "Years 1 - 3 (The Spec Factory)", desc: "Enter as an Associate Product Manager (APM) inside a major ecosystem platform (e.g., Weverse, Chai). Author meticulous Product Requirement Documents (PRDs) and own feature tracking loops." },
+                    { year: "Years 4 - 6 (The Strategic Pivot)", desc: "Advance to Senior Product Manager, directing consumer retention vectors. Defend core monetization mechanics against competitive platform encroachment." },
+                    { year: "Years 7 - 10+ (The Director Command)", desc: "Elevate into Director of Product or VP Ecosystem Strategy. You hold complete administrative command over global engineering priorities and large-scale asset allocations." }
+                ]
+            }
+        };
+
+        function runFutureSimulation() {
+            const chosenPath = document.getElementById('pathSelection').value;
+            const chosenTier = document.getElementById('tierSelection').value;
+            const chosenRisk = document.getElementById('riskSelection').value;
+
+            const matrix = pathMatrices[chosenPath];
+            const desk = document.getElementById('displayDesk');
+
+            // Recalculate salary baseline arrays conditionally if global remote configuration is active
+            let activeSalaryEstimate = matrix.metrics.salary;
+            if(chosenTier === "remote" && chosenPath !== "indie") {
+                activeSalaryEstimate = "$140k - $280k USD / Base";
+            } else if (chosenTier === "tier2") {
+                activeSalaryEstimate = "₹18 - 45 LPA (Adjusted for Tier-2 deflation)";
+            }
+
+            desk.innerHTML = `
+                <div class="trajectory-title-row">
+                    <h2>🔮 ${matrix.title}</h2>
+                    <div style="color: var(--neon-cyan); font-size: 14px; margin-top: 5px; font-weight: 500;">
+                        ${matrix.tagline}
+                    </div>
+                </div>
+
+                <div class="trajectory-grid">
+                    <div class="metric-box">
+                        <div>Predictive Yield Bracket</div>
+                        <div style="color: #10b981;">${activeSalaryEstimate}</div>
+                    </div>
+                    <div class="metric-box">
+                        <div>System Stability Model</div>
+                        <div>${matrix.metrics.stability}</div>
+                    </div>
+                    <div class="metric-box">
+                        <div>Burnout Vector Rating</div>
+                        <div style="color: #f43f5e;">${chosenRisk === "high" ? "Elevated Risk" : matrix.metrics.burnout}</div>
+                    </div>
+                </div>
+
+                <div class="branch-timeline-card">
+                    <h3 style="margin: 0 0 20px 0; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; color: var(--neon-purple);">
+                        Multi-Decade Branch Milestones
+                    </h3>
+                    <div style="display: flex; flex-direction: column; gap: 20px;">
+                        ${matrix.steps.map(step => `
+                            <div class="branch-step">
+                                <div class="step-year">${step.year}</div>
+                                <div class="step-desc">${step.desc}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html>

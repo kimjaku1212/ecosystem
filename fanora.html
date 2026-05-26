@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fanora Strategy Wireframe - Weverse Integration Prototype</title>
+    <style>
+        :root {
+            --bg-dark: #0f111a;
+            --bg-card: #171b26;
+            --accent-green: #10b981;
+            --accent-neon: #00fff0;
+            --text-main: #f1f5f9;
+            --text-muted: #64748b;
+            --font-display: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: var(--font-display);
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        header {
+            background-color: #1a1f2c;
+            padding: 15px 30px;
+            border-bottom: 1px solid #262f45;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            background: linear-gradient(45deg, #00fff0, #00f2fe);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .role-badge {
+            background-color: rgba(0, 255, 240, 0.1);
+            border: 1px solid var(--accent-neon);
+            color: #00fff0;
+            padding: 4px 14px;
+            border-radius: 30px;
+            font-size: 11px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .dashboard-container {
+            display: flex;
+            flex: 1;
+            height: calc(100vh - 55px);
+            overflow: hidden;
+        }
+
+        /* LEFT SIDE: MULTI-APP FRAGMENTATION CONTROLLER */
+        .radar-panel {
+            flex: 1.2;
+            background-color: var(--bg-dark);
+            border-right: 1px solid #222d42;
+            display: flex;
+            flex-direction: column;
+            padding: 25px;
+            overflow-y: auto;
+        }
+
+        .section-title {
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--accent-neon);
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .metric-banner {
+            background: linear-gradient(135deg, #1e2538, #141926);
+            border: 1px solid #2d3852;
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: space-around;
+            text-align: center;
+        }
+
+        .metric-item div:first-child {
+            font-size: 20px;
+            font-weight: 800;
+            color: #fff;
+        }
+
+        .metric-item div:last-child {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .aggregation-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .radar-card {
+            background-color: var(--bg-card);
+            border: 1px solid #242c3e;
+            border-radius: 12px;
+            padding: 16px;
+            cursor: pointer;
+            transition: transform 0.2s, border-color 0.2s;
+            position: relative;
+        }
+
+        .radar-card:hover {
+            transform: translateY(-2px);
+            border-color: #3b4866;
+        }
+
+        .card-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            margin-bottom: 8px;
+        }
+
+        .source-tag {
+            color: #fff;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+
+        .source-mnet { background-color: #ff007a; }
+        .source-twitter { background-color: #1da1f2; }
+        .source-youtube { background-color: #ff0000; }
+
+        .time-remaining {
+            color: #ffb700;
+            font-weight: 600;
+        }
+
+        .card-headline {
+            font-size: 14px;
+            font-weight: 600;
+            margin: 0 0 10px 0;
+            line-height: 1.4;
+        }
+
+        .action-preview-btn {
+            background-color: #242f47;
+            color: #a0aec0;
+            border: none;
+            width: 100%;
+            padding: 8px;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        /* RIGHT SIDE: STRATEGIC WORKSPACE / INTEGRATION VIEW */
+        .workspace-panel {
+            flex: 1;
+            background-color: #0a0c12;
+            padding: 35px;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        .mock-display-box {
+            background-color: var(--bg-card);
+            border: 2px dashed #2d3852;
+            border-radius: 16px;
+            padding: 30px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .mock-active-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: #fff;
+        }
+
+        .mock-details {
+            font-size: 14px;
+            color: #94a3b8;
+            line-height: 1.6;
+            max-width: 400px;
+            margin-bottom: 25px;
+        }
+
+        .action-hub-mock {
+            background-color: #121622;
+            border: 1px solid #1f273a;
+            border-radius: 12px;
+            width: 100%;
+            padding: 20px;
+            box-sizing: border-box;
+            text-align: left;
+        }
+
+        .hub-title {
+            font-size: 12px;
+            color: var(--accent-neon);
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+            letter-spacing: 0.5px;
+        }
+
+        .hub-link-sim {
+            background: linear-gradient(90deg, #10b981, #059669);
+            color: white;
+            text-align: center;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 14px;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Fanora Native Ecosystem Spec</h1>
+        <div class="role-badge">Weverse Strategy Pitch Layout</div>
+    </header>
+
+    <div class="dashboard-container">
+        
+        <div class="radar-panel">
+            <div class="section-title">
+                <span>Centralized Event Stream Radar</span>
+                <span style="font-size: 11px; color: var(--text-muted);">Tracking 3 External Channels</span>
+            </div>
+
+            <div class="metric-banner">
+                <div class="metric-item">
+                    <div>0</div>
+                    <div>App Bounces Required</div>
+                </div>
+                <div class="metric-item">
+                    <div>100%</div>
+                    <div>Weverse Session Retention</div>
+                </div>
+            </div>
+
+            <div class="aggregation-list">
+                <div class="radar-card" onclick="viewStrategicTarget('Mnet Plus Pre-Voting Pool', 'Pre-voting loops on Mnet require complex fan verification. Integrating Fanora directly embeds a client-side frame or quick-routing web API, allowing the entire fandom block to deposit mass token balances without minimizing the primary artist feed.', 'https://mnetplus.world')">
+                    <div class="card-meta">
+                        <span class="source-tag source-mnet">Mnet Voting</span>
+                        <span class="time-remaining">Ends in 04h 12m</span>
+                    </div>
+                    <div class="card-headline">M Countdown Pre-Voting Block Phase 1 Coordination</div>
+                    <div class="action-preview-btn">Inspect Native Integration Logic</div>
+                </div>
+
+                <div class="radar-card" onclick="viewStrategicTarget('Global Streaming Target Engine', 'Streaming schedules often clear down into scattered, manually managed image layouts on X. This component processes raw content tags and auto-generates a zero-friction audio playback queue natively supported in-app.', 'https://youtube.com')">
+                    <div class="card-meta">
+                        <span class="source-tag source-youtube">YouTube/Streaming</span>
+                        <span class="time-remaining">Active Target</span>
+                    </div>
+                    <div class="card-headline">Title Track Teaser 2 Execution Goal: Target 15M Views</div>
+                    <div class="action-preview-btn">Inspect Native Integration Logic</div>
+                </div>
+
+                <div class="radar-card" onclick="viewStrategicTarget('Mass Mass-Posting Schedule', 'Instead of manual tag parsing across disconnected community accounts, Fanora aggregates verified trending tags into a structured timeline view with one-click clipboard staging templates.', 'https://twitter.com')">
+                    <div class="card-meta">
+                        <span class="source-tag source-twitter">X / Twitter Trends</span>
+                        <span class="time-remaining">Starts in 1d 08h</span>
+                    </div>
+                    <div class="card-headline">Global Hashtag Attack & Comeback Timeline Synchronization</div>
+                    <div class="action-preview-btn">Inspect Native Integration Logic</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="workspace-panel">
+            <div class="mock-display-box" id="workspaceBox">
+                <div style="font-size: 40px; margin-bottom: 15px;">🔍</div>
+                <div class="mock-active-title">Select a Fragmented Event Stream Card</div>
+                <div class="mock-details">
+                    Click any external app coordinate card on the left panel to simulate how the Fanora architectural engine centralizes execution directly inside the host UI ecosystem.
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        function viewStrategicTarget(title, details, targetUrl) {
+            const workspace = document.getElementById('workspaceBox');
+            workspace.style.backgroundColor = '#131722';
+            workspace.style.border = '2px solid #222d42';
+            workspace.style.display = 'block';
+            workspace.style.textAlign = 'left';
+
+            workspace.innerHTML = `
+                <div class="mock-active-title" style="border-bottom: 1px solid #222d42; padding-bottom: 15px; background: linear-gradient(45deg, #00fff0, #a78bfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                    ${title}
+                </div>
+                <p class="mock-details" style="max-width: 100%; margin-top: 15px; font-size: 14px;">
+                    <strong>The Retention Fix Architecture:</strong><br>${details}
+                </p>
+                <div class="action-hub-mock">
+                    <div class="hub-title">Native Interaction Simulation Frame</div>
+                    <p style="font-size: 12px; color: #64748b; margin: 0 0 15px 0;">
+                        User stays securely authenticated in the primary application ecosystem while performing an action on <em>${targetUrl}</em>.
+                    </p>
+                    <div class="hub-link-sim">
+                        Execute Action Seamlessly Natively
+                    </div>
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html>

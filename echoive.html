@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Echoive - The Digital Emotional Museum</title>
+    <style>
+        :root {
+            --bg-museum: #05060b;
+            --bg-slate: #0d101d;
+            --bg-exhibit: #161b30;
+            --neon-teal: #00ffcc;
+            --neon-gold: #fbbf24;
+            --text-white: #f8fafc;
+            --text-dim: #475569;
+            --font-stack: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-museum);
+            color: var(--text-white);
+            font-family: var(--font-stack);
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        header {
+            background-color: var(--bg-slate);
+            padding: 18px 35px;
+            border-bottom: 1px solid #1f2747;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 20px;
+            font-weight: 300;
+            letter-spacing: 3px;
+            background: linear-gradient(to right, var(--neon-teal), #6366f1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .museum-status {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--neon-teal);
+            border: 1px solid rgba(0, 255, 204, 0.2);
+            padding: 5px 14px;
+            border-radius: 4px;
+            background: rgba(0, 255, 204, 0.03);
+        }
+
+        .museum-floor {
+            display: flex;
+            flex: 1;
+            height: calc(100vh - 57px);
+            overflow: hidden;
+        }
+
+        /* LEFT SIDE: CURATOR'S DECK INPUTS */
+        .curator-deck {
+            width: 350px;
+            background-color: var(--bg-slate);
+            border-right: 1px solid #1f2747;
+            padding: 25px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            overflow-y: auto;
+        }
+
+        .deck-section {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .deck-section label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #64748b;
+            font-weight: bold;
+        }
+
+        .memory-area {
+            width: 100%;
+            height: 110px;
+            background-color: var(--bg-museum);
+            border: 1px solid #1f2747;
+            border-radius: 8px;
+            padding: 12px;
+            color: #fff;
+            resize: none;
+            outline: none;
+            font-family: inherit;
+            box-sizing: border-box;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .memory-area:focus {
+            border-color: var(--neon-teal);
+        }
+
+        .curator-select {
+            background: var(--bg-museum);
+            color: #fff;
+            border: 1px solid #1f2747;
+            padding: 10px;
+            border-radius: 6px;
+            outline: none;
+            cursor: pointer;
+            font-size: 13px;
+        }
+
+        .exhibit-btn {
+            background: transparent;
+            border: 1px solid var(--neon-teal);
+            color: var(--neon-teal);
+            padding: 14px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 13px;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.25s;
+            margin-top: 10px;
+        }
+
+        .exhibit-btn:hover {
+            background: rgba(0, 255, 204, 0.08);
+            box-shadow: 0 0 15px rgba(0, 255, 204, 0.2);
+        }
+
+        /* RIGHT SIDE: LINEARPersonal MUSEUM EXHIBITIONS */
+        .exhibitions-timeline {
+            flex: 1;
+            padding: 40px;
+            overflow-y: auto;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            position: relative;
+        }
+
+        /* TIMELINE LINE TRACKER EDGE BACKDROP */
+        .exhibitions-timeline::before {
+            content: '';
+            position: absolute;
+            left: 55px;
+            top: 40px;
+            bottom: 40px;
+            width: 1px;
+            background: #1f2747;
+            z-index: 1;
+        }
+
+        .exhibit-node {
+            display: flex;
+            gap: 30px;
+            position: relative;
+            z-index: 2;
+            animation: slideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-10px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .node-chronology {
+            font-family: monospace;
+            font-size: 12px;
+            color: var(--neon-gold);
+            width: 32px;
+            text-align: right;
+            padding-top: 22px;
+            font-weight: bold;
+        }
+
+        .exhibit-card {
+            flex: 1;
+            background-color: var(--bg-exhibit);
+            border: 1px solid #1f2747;
+            border-radius: 12px;
+            padding: 22px;
+            position: relative;
+        }
+
+        .exhibit-card::before {
+            content: '◆';
+            position: absolute;
+            left: -37px;
+            top: 20px;
+            color: var(--neon-teal);
+            background-color: var(--bg-museum);
+            font-size: 12px;
+        }
+
+        .card-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #64748b;
+            margin-bottom: 12px;
+            font-weight: bold;
+        }
+
+        .badge-type {
+            color: var(--neon-teal);
+            border: 1px solid rgba(0, 255, 204, 0.3);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+        }
+
+        .memory-quote-string {
+            font-size: 14.5px;
+            line-height: 1.6;
+            color: #cbd5e1;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>ECHOIVE</h1>
+        <div class="museum-status">Archive Integrity: Secure</div>
+    </header>
+
+    <div class="museum-floor">
+        <div class="curator-deck">
+            <div class="deck-section">
+                <label>Memory Capsule Content</label>
+                <textarea class="memory-area" id="memoryInput" placeholder="Paste structural texts, screenshots notes, raw fragments, or milestones worth freezing in time..."></textarea>
+            </div>
+
+            <div class="deck-section">
+                <label>Sensory Modality Type</label>
+                <select class="curator-select" id="modalityInput">
+                    <option value="📟 Chat Extract">📟 Chat Extract / Dialogue</option>
+                    <option value="💭 Introspective Core">💭 Introspective Core / Feeling</option>
+                    <option value="🖼️ Visual Nostalgia">🖼️ Visual Nostalgia / Milestone</option>
+                </select>
+            </div>
+
+            <div class="deck-section">
+                <label>Nostalgia Layer Depth</label>
+                <select class="curator-select" id="depthInput">
+                    <option value="Fresh Core">Fresh Fragment (Recent Months)</option>
+                    <option value="Deep History">Deep Legacy Layer (Years Back)</option>
+                </select>
+            </div>
+
+            <button class="exhibit-btn" onclick="commitToMuseumTimeline()">Lock into Museum</button>
+        </div>
+
+        <div class="exhibitions-timeline" id="timelineViewport">
+            <div class="exhibit-node">
+                <div class="node-chronology">01</div>
+                <div class="exhibit-card">
+                    <div class="card-header-row">
+                        <span class="badge-type">📟 CHAT EXTRACT</span>
+                        <span>DEPTH: FRESH CORE</span>
+                    </div>
+                    <div class="memory-quote-string">"me at 2 AM: 'i have literally no idea if this product dashboard layout makes any logical sense.'&#10;you: 'bro stop overthinking it, it’s completely clean, just go to sleep.'"</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let nodeIndexTracker = 1;
+
+        function commitToMuseumTimeline() {
+            const rawText = document.getElementById('memoryInput').value.trim();
+            const chosenModality = document.getElementById('modalityInput').value;
+            const chosenDepth = document.getElementById('depthInput').value;
+
+            if(!rawText) { alert("Please input a text snippet or conversational fragment first!"); return; }
+
+            nodeIndexTracker++;
+            const displayIndex = nodeIndexTracker.toString().padStart(2, '0');
+
+            const viewport = document.getElementById('timelineViewport');
+            const nodeElement = document.createElement('div');
+            nodeElement.className = 'exhibit-node';
+
+            nodeElement.innerHTML = `
+                <div class="node-chronology">${displayIndex}</div>
+                <div class="exhibit-card">
+                    <div class="card-header-row">
+                        <span class="badge-type">${chosenModality.toUpperCase()}</span>
+                        <span>DEPTH: ${chosenDepth.toUpperCase()}</span>
+                    </div>
+                    <div class="memory-quote-string">"${rawText}"</div>
+                </div>
+            `;
+
+            // Insert at the absolute summit of the timeline axis layout
+            viewport.insertBefore(nodeElement, viewport.firstChild);
+            
+            // Clean slate restoration strings
+            document.getElementById('memoryInput').value = '';
+        }
+    </script>
+</body>
+</html>

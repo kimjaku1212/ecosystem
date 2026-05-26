@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Strategy & Engineering Portfolio</title>
+    <style>
+        :root {
+            --bg-black: #05070f;
+            --bg-surface: #0b0f19;
+            --bg-card: #121826;
+            --neon-blue: #00fff0;
+            --neon-purple: #8b5cf6;
+            --neon-pink: #ff007a;
+            --text-main: #f1f5f9;
+            --text-muted: #64748b;
+            --border-glow: #1e293b;
+        }
+
+        body {
+            background-color: var(--bg-black);
+            color: var(--text-main);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+
+        header {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 80px 20px 40px 20px;
+            text-align: center;
+            border-bottom: 1px solid var(--border-glow);
+        }
+
+        header h1 {
+            font-size: 42px;
+            font-weight: 800;
+            letter-spacing: -1px;
+            margin: 0 0 15px 0;
+            background: linear-gradient(45deg, var(--neon-blue), var(--neon-purple), var(--neon-pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        header p {
+            font-size: 16px;
+            color: var(--text-muted);
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.8;
+        }
+
+        .filter-dock {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin: 40px auto;
+            padding: 0 20px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            background-color: var(--bg-surface);
+            border: 1px solid var(--border-glow);
+            color: var(--text-main);
+            padding: 10px 20px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.25s ease;
+            text-decoration: none;
+        }
+
+        .filter-btn:hover, .filter-btn.active {
+            border-color: var(--neon-blue);
+            box-shadow: 0 0 15px rgba(0, 255, 240, 0.15);
+            background-color: var(--bg-card);
+            color: #fff;
+        }
+
+        .portfolio-grid {
+            max-width: 1200px;
+            margin: 0 auto 80px auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+        }
+
+        @media (max-width: 850px) {
+            .portfolio-grid { grid-template-columns: 1fr; }
+        }
+
+        .project-card {
+            background-color: var(--bg-surface);
+            border: 1px solid var(--border-glow);
+            border-radius: 16px;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            transition: transform 0.3s ease, border-color 0.3s ease;
+            justify-content: space-between;
+        }
+
+        .project-card:hover {
+            transform: translateY(-2px);
+            border-color: #2e3d5e;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .card-header h2 {
+            margin: 0;
+            font-size: 22px;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .tag-badge {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: bold;
+            padding: 4px 10px;
+            border-radius: 4px;
+        }
+
+        .tag-utility { background: rgba(0, 255, 240, 0.1); color: var(--neon-blue); border: 1px solid var(--neon-blue); }
+        .tag-aggregator { background: rgba(139, 92, 246, 0.1); color: var(--neon-purple); border: 1px solid var(--neon-purple); }
+        .tag-sanctuary { background: rgba(255, 0, 122, 0.1); color: var(--neon-pink); border: 1px solid var(--neon-pink); }
+
+        .section-block {
+            font-size: 14px;
+        }
+
+        .section-block strong {
+            display: block;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+
+        .section-block p {
+            margin: 0;
+            color: #cbd5e1;
+        }
+
+        .launch-btn {
+            align-self: flex-start;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-glow);
+            color: var(--text-main);
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s;
+            margin-top: 10px;
+        }
+
+        .launch-btn:hover {
+            background: var(--text-main);
+            color: var(--bg-black);
+            border-color: var(--text-main);
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Product Architecture & Strategy Vault</h1>
+        <p>A compilation of 10 core applications tracking minimalist utility, community aggregators, and emotionally intelligent digital sanctuaries.</p>
+    </header>
+
+    <div class="filter-dock">
+        <button class="filter-btn active" onclick="filterCatalog('all')">Show All Concepts (10)</button>
+        <button class="filter-btn" onclick="filterCatalog('utility')">Utilities</button>
+        <button class="filter-btn" onclick="filterCatalog('aggregator')">Aggregators</button>
+        <button class="filter-btn" onclick="filterCatalog('sanctuary')">Sanctuaries</button>
+    </div>
+
+    <div class="portfolio-grid" id="portfolioGrid">
+        
+        <div class="project-card" data-category="utility">
+            <div>
+                <div class="card-header">
+                    <h2>📖 Diary (Dear Diary)</h2>
+                    <span class="tag-badge tag-utility">Utility</span>
+                </div>
+                <div class="section-block" style="margin-top:15px;">
+                    <strong>Why it's made</strong>
+                    <p>To capture fleeting inner reflections before formatting rules or account logins disrupt the human impulse to write.</p>
+                </div>
+                <div class="section-block" style="margin-top:15px;">
+                    <strong>The Problem It Solves</strong>
+                    <p>Heavy workspace apps suffer from intense feature creep, forcing complex hierarchies and cloud delays onto simple, immediate text capturing.</p>
+                </div>
+                <div class="section-block" style="margin-top:15px;">
+                    <strong>How It Solves It</strong>
+                    <p>Maintains a zero-login layout operating entirely on local storage, stripping away interface clutter to isolate raw text entry.</p>
+                </div>
+            </div>
+            <a href="diary.html" class="launch-btn">Launch Prototype &rarr;</a>
+        </div>
+
+        <div class="project-card" data-category="aggregator">
+            <div>
+                <div class="card-header">
+                    <h2>🎭 Fanora</h2>
+                    <span class="tag-badge tag-aggregator">Aggregator</span>
+                </div>
+                <div class="section-block" style="margin-top:15px;">
+                    <strong>Why it's made</strong>
+                    <p>To centralize pop-culture and fandom updates under a unified, immersive identity platform.</p>
+                </div>
+                <div class="section-block" style="margin-top:15px;">
+                    <strong>The Problem It Solves</strong>
+                    <p>Fandom tracking is highly fragmented across X, Discord, and Reddit, causing users to miss schedule updates and lose community lore threads.</p>
+                </div>
+                <div class="section-block" style="margin-top:15px;">
+                    <strong>How It Solves It</strong>
+                    <p>Aggregates scattered feeds into dedicated community nodes, featuring a persistent lore vault archive and premium aesthetic filters.</p>
+                </div>
+            </div>
+            <a href="fanora.html" class="launch-btn">Launch Prototype &rarr;</a>
+        </div>
+
+        <div class="project-card" data-category="aggregator">
+            <div>
+                <div class="card-header">
+                    <h2>🔮 Future Navigator</h2>
+                    <span class="tag-badge tag-aggregator">Aggregator</span>
+                </div>
+                <div class="section-block" style="margin-top:15px;">
+                    <strong>Why it's made</strong>
+                    <p>To counter severe early career anxiety by providing macro life trajectory mapping.</p>
+                </div>
+                <div class="section-block" style="margin-top:15px;">
+                    <strong>The Problem It Solves</strong>
+                    <p>Traditional professional guidance is static and detached from real-world factors like multi-decade paths, geographic inflation, and burnout vectors.</p>
+                </div>
+                <div class="section-block" style="margin-top:15px;">
+                    <strong>How It Solves It</strong>
+                    <p>Applies an interactive trajectory simulator that maps out custom professional branches, risk parameters, and financial baseline estimates.</p>
+                </div>
+            </div>
+            <a href="future_navigator.html" class="launch-btn">Launch Prototype &rarr;</a>
+        </div>
+
+        <div class="project-card" data-category="sanctuary">
+            <div>
+                <div class="card-header">
+                    <h2>🎭 Reverie</h2>
+                    <span class="tag-badge tag-sanctuary">Sanctuary</span>
+                </div>
+                <div class="section-block" style="margin-top:15px;">
+                    <strong>Why it's made</strong>
+                    <p>To upgrade AI companion spaces into deeply immersive, long-form storytelling relationships.</p>
+                </div>
+                <div class="section-block" style="margin-top:15px;">
+                    <strong>The Problem It Solves</strong>
+                    <p>Standard AI chat apps feel repetitive and transactional, breaking immersion with rapid pacing loops and memory rot.</p>
+                </div>
+                <div class="section-block" style="margin-top:15px;">
+                    <strong>How It Solves It</strong>
+                    <p>Introduces a Dynamic Momentum Slider to govern narrative pacing alongside a continuous book-like layout that replaces text bubbles.</p>
+                </div>
+            </div>
+            <a href="reverie.html" class="launch-btn">Launch Prototype &rarr;</a>
+        </div>
+
+        <div class="project-card" data-category="sanctuary">
+            <div>
+                <div class="card-header">
+                    <h2>🌙 Noctis</h2>
+                    <span class="tag-badge tag-sanctuary">Sanctuary</span>
+                </div>
+                <div class="section-block" style="margin-top:15px;">
+                    <strong>Why it's made</strong>
+                    <p>To establish an exclusive digital space designed entirely for deep nighttime reflection and unmasked vulnerability.</p>
+                </div>
+                <div class="section-block" style="margin-top:15px;">
+                    <strong>The Problem It Solves</strong>
+                    <p>Mainstream networks run on toxic metric loops that fuel social performance anxiety, especially during late-night hours when isolation peaks.</p>
+                </div>
+                <div class="section-block" style="margin-top:15px;">
+                    <strong>How It Solves It</strong>
+                    <p>Uses strict artificial time-scarcity by locking entirely during the day, opening only from 10 PM to 6 AM to offer an anonymous, pressure-free feed.</p>
+                </div>
+            </div>
+            <a href="noctis.html" class="launch-btn">Launch Prototype &rarr;</a>
+        </div>
+
+        <div class="project-card" data-category="sanctuary">
+            <div>
+                <div class="card-header">
+                    <h2>🌌 Lumora</h2>
+                    <span class="tag-badge tag-sanctuary">Sanctuary</span>
+                </div>
+                <div class="section-block" style="margin-top:15px;">
+                    <strong>Why it's made</strong>
+                    <p>To give users a personal digital sanctuary for active relaxation and mental decompression.</p>
+                </div>
+                <div class="section-block" style="margin-top:15px;">
+                    <strong>The Problem It Solves</strong>
+                    <p>The modern web lacks dedicated spaces focused on ambient comfort, leaving users overstimulated by chaotic layouts and constant notifications.</p>
+                </div>
+                <div class="section-block" style="margin-top:15px;">
+                    <strong>How It Solves It</strong>
+                    <p>Provides a modular room customizer that balances soft audio styles, fluid backdrops, and comforting quote generators.</p>
+                </div>
+            </div>
+            <a href="lumora.html" class="launch-btn">Launch Prototype &rarr;</a>
+        </div>
+
+        <div class="project-card" data-category="sanctuary">
+            <div>
+                <div class="card-header">
+                    <h2>✨ Velora</h2>
+                    <span class="tag-badge tag-sanctuary">Sanctuary</span>
+                </div>
+                <div class="section-block" style="margin-top:15px;">
+                    <strong>Why it's made</strong>
+                    <p>To realign content exploration with human emotional states rather than engagement metrics.</p>
+                </div>
+                <div class="section-block" style="margin-top:15px;">
+                    <strong>The Problem It Solves</strong>
+                    <p>Algorithmic search feeds force high-velocity content onto users while totally ignoring their actual headspace and current mood.</p>
+                </div>
+                <div class="section-block" style="margin-top:15px;">
+                    <strong>How It Solves It</strong>
+                    <p>Implements an emotion-based exploration index, filtering web aesthetics down to soundscapes, visual anchors, and quotes that match a specific feeling.</p>
+                </div>
+            </div>
+            <a href="velora.html" class="launch-btn">Launch Prototype &rarr;</a>
+        </div>
+
+        <div class="project-card" data-category="sanctuary">
+            <div>
+                <div class="card-header">
+                    <h2>🫧 Somnia</h2>
+                    <span class="tag-badge tag-sanctuary">Sanctuary</span>
+                </div>
+                <div class="section-block" style="margin-top:15px;">
+                    <strong>Why it's made</strong>
+                    <p>To turn passing dream fragments into permanent, visual subconscious records before waking memory fades.</p>
+                </div>
+                <div class="section-block" style="margin-top:15px;">
+                    <strong>The Problem It Solves</strong>
+                    <p>Vivid subconscious narratives and sleep patterns vanish quickly within minutes of waking, losing key personal symbols and thoughts.</p>
+                </div>
+                <div class="section-block" style="margin-top:15px;">
+                    <strong>How It Solves It</strong>
+                    <p>Pairs clean narrative logging inputs with stylized canvas render blocks to categorize dream archetypes and emotional residue.</p>
+                </div>
+            </div>
+            <a href="somnia.html" class="launch-btn">Launch Prototype &rarr;</a>
+        </div>
+
+        <div class="project-card" data-category="sanctuary">
+            <div>
+                <div class="card-header">
+                    <h2>📼 Echoive</h2>
+                    <span class="tag-badge tag-sanctuary">Sanctuary</span>
+                </div>
+                <div class="section-block" style="margin-top:15px;">
+                    <strong>Why it's made</strong>
+                    <p>To archive personal chat snapshots, voice notes, and private memories inside a structured emotional museum.</p>
+                </div>
+                <div class="section-block" style="margin-top:15px;">
+                    <strong>The Problem It Solves</strong>
+                    <p>Meaningful life chapters and text fragments end up buried across disconnected chat histories and unorganized camera rolls.</p>
+                </div>
+                <div class="section-block" style="margin-top:15px;">
+                    <strong>How It Solves It</strong>
+                    <p>Builds a beautiful, chronological timeline workspace that locks text snippets down into permanent, searchable exhibition records.</p>
+                </div>
+            </div>
+            <a href="echoive.html" class="launch-btn">Launch Prototype &rarr;</a>
+        </div>
+
+        <div class="project-card" data-category="sanctuary">
+            <div>
+                <div class="card-header">
+                    <h2>🪞 Mirrora</h2>
+                    <span class="tag-badge tag-sanctuary">Sanctuary</span>
+                </div>
+                <div class="section-block" style="margin-top:15px;">
+                    <strong>Why it's made</strong>
+                    <p>To replace quick transactional AI chats with a deliberate, slow-paced engine focused entirely on deep self-reflection.</p>
+                </div>
+                <div class="section-block" style="margin-top:15px;">
+                    <strong>The Problem It Solves</strong>
+                    <p>Standard AI systems push quick, chatbot-style responses that rush the conversation instead of giving the user space to think.</p>
+                </div>
+                <div class="section-block" style="margin-top:15px;">
+                    <strong>How It Solves It</strong>
+                    <p>Utilizes an adjustable Momentum Throttle (Slow Burn to Cathartic Climax) to structure conversation depth over a classic book layout layout.</p>
+                </div>
+            </div>
+            <a href="mirrora.html" class="launch-btn">Launch Prototype &rarr;</a>
+        </div>
+
+    </div>
+
+    <script>
+        function filterCatalog(category) {
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            if(event) {
+                event.currentTarget.classList.add('active');
+            }
+
+            const cards = document.querySelectorAll('.project-card');
+            cards.forEach(card => {
+                if(category === 'all' || card.getAttribute('data-category') === category) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+    </script>
+</body>
+</html>

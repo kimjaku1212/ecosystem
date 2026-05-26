@@ -1,0 +1,247 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dear Diary — Minimalist Space</title>
+    <style>
+        :root {
+            --bg-main: #090a0f;
+            --bg-card: #121420;
+            --bg-input: #030407;
+            --border: rgba(255, 255, 255, 0.08);
+            --border-focus: rgba(255, 255, 255, 0.2);
+            --text-main: #f4f4f7;
+            --text-muted: #8e93af;
+            --accent: #fffdd0; /* Cream accent retained */
+            --accent-hover: #e6e4bc;
+            --danger: #ff6b6b;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .diary-space {
+            background-color: var(--bg-card);
+            width: 100%;
+            max-width: 500px;
+            padding: 40px;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
+        }
+
+        .header-area {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 24px;
+        }
+
+        .h1 {
+            font-size: 20px;
+            font-weight: 500;
+            letter-spacing: -0.3px;
+            margin: 0;
+            color: var(--text-main);
+        }
+
+        .date-display {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .writing-area {
+            width: 100%;
+            height: 160px;
+            background-color: var(--bg-input);
+            color: var(--text-main);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 16px;
+            font-size: 15px;
+            line-height: 1.6;
+            resize: none;
+            box-sizing: border-box;
+            outline: none;
+            font-family: inherit;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .writing-area:focus {
+            border-color: var(--border-focus);
+        }
+
+        /* Fixed the alignment into a premium button group */
+        .action-bar {
+            display: flex;
+            gap: 10px;
+            margin-top: 16px;
+        }
+
+        button {
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 500;
+            padding: 10px 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 1px solid transparent;
+        }
+
+        .final {
+            background-color: var(--accent);
+            color: #000;
+        }
+
+        .final:hover {
+            background-color: var(--accent-hover);
+        }
+
+        .saved-notes {
+            background-color: transparent;
+            color: var(--text-muted);
+            border: 1px solid var(--border);
+        }
+
+        .saved-notes:hover {
+            color: var(--text-main);
+            border-color: var(--border-focus);
+        }
+
+        .delete {
+            background-color: transparent;
+            color: var(--text-muted);
+            margin-left: auto; /* Pushes delete button beautifully to the right */
+        }
+
+        .delete:hover {
+            color: var(--danger);
+        }
+
+        /* Status message replaces jarring popups */
+        .status-msg {
+            font-size: 12px;
+            color: var(--accent);
+            margin-top: 12px;
+            height: 16px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .notes-container {
+            margin-top: 24px;
+            border-top: 1px solid var(--border);
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .note-card {
+            background: var(--bg-input);
+            padding: 16px;
+            margin-top: 16px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            font-size: 14px;
+            line-height: 1.5;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="diary-space">
+        <div class="header-area">
+            <h1 class="h1">Dear Diary</h1>
+            <div class="date-display" id="current-date"></div>
+        </div>
+        
+        <textarea class="writing-area" placeholder="What's on your mind?"></textarea>
+        
+        <div class="action-bar">
+            <button class="final">Save entry</button>
+            <button class="saved-notes">View past logs</button>
+            <button class="delete">Clear all</button>
+        </div>
+
+        <div class="status-msg" id="status-text"></div>
+
+        <div class="notes-container"></div>
+    </div>
+
+<script>
+    const textarea = document.querySelector('.writing-area');
+    const saveButton = document.querySelector('.final');
+    const deleteButton = document.querySelector('.delete');
+    const savedButton = document.querySelector('.saved-notes');
+    const notesContainer = document.querySelector('.notes-container');
+    const statusText = document.getElementById('status-text');
+
+    // Displaying dynamic date because design details matter
+    document.getElementById('current-date').innerText = new Date().toLocaleDateString('en-US', { 
+        month: 'short', day: 'numeric' 
+    });
+
+    let notes = JSON.parse(localStorage.getItem('allNotes')) || [];
+
+    function showStatus(msg) {
+        statusText.innerText = msg;
+        statusText.style.opacity = '1';
+        setTimeout(() => { statusText.style.opacity = '0'; }, 2000);
+    }
+
+    saveButton.addEventListener('click', function () {
+        const noteText = textarea.value.trim();
+        if (noteText === '') {
+            showStatus('⚠️ Cannot save an empty entry.');
+            return;
+        }
+        notes.push(noteText);
+        localStorage.setItem('allNotes', JSON.stringify(notes));
+        textarea.value = '';
+        showStatus('🌌 Entry successfully logged.');
+    });
+
+    deleteButton.addEventListener('click', function () {
+        if(notes.length === 0) return;
+        localStorage.removeItem('allNotes');
+        notes = [];
+        notesContainer.innerHTML = '';
+        showStatus('🗑️ Workspace cleared.');
+    });
+
+    savedButton.addEventListener('click', function () {
+        notesContainer.innerHTML = '';
+        if(notes.length === 0) {
+            showStatus('📂 No logs found.');
+            return;
+        }
+        notes.forEach(function (note) {
+            const noteCard = document.createElement('div');
+            noteCard.classList.add('note-card');
+            noteCard.innerText = note;
+            notesContainer.appendChild(noteCard);
+        });
+    });
+</script>
+
+</body>
+</html>

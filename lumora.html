@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lumora - Emotional Room Creator</title>
+    <style>
+        :root {
+            --bg-blur: rgba(10, 12, 22, 0.6);
+            --border-glow: rgba(0, 255, 240, 0.2);
+            --text-glow: #e2e8f0;
+            --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            font-family: var(--font-sans);
+            color: var(--text-glow);
+            overflow: hidden;
+            background-color: #05070f;
+        }
+
+        /* DYNAMIC ROOM ATMOSPHERE BACKGROUNDS */
+        .room-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            transition: all 1.5s ease-in-out;
+            background-size: cover;
+            background-position: center;
+        }
+
+        /* Ambient Room Style Variations using gradients to simulate atmospheric spaces */
+        .vibe-rain {
+            background: linear-gradient(180deg, #091026, #02040a),
+                        radial-gradient(circle at 30% 20%, #1e293b 0%, transparent 50%);
+        }
+        .vibe-sunset {
+            background: linear-gradient(135deg, #1e112a, #0c0714),
+                        radial-gradient(circle at 80% 20%, #431407 0%, transparent 60%);
+        }
+        .vibe-nebula {
+            background: linear-gradient(180deg, #070913, #020308),
+                        radial-gradient(circle at 50% 50%, #2e1065 0%, transparent 70%);
+        }
+
+        /* OVERLAY GLASS UI */
+        .room-overlay {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-sizing: border-box;
+            padding: 30px;
+            background: radial-gradient(circle at center, transparent 30%, rgba(5, 7, 15, 0.8) 100%);
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 400;
+            letter-spacing: 3px;
+            background: linear-gradient(to right, #fff, #94a3b8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* CENTER COMFORT CAGE (THE QUOTE SYSTEM) */
+        .center-sanctuary {
+            align-self: center;
+            max-width: 500px;
+            text-align: center;
+            background: var(--bg-blur);
+            border: 1px solid var(--border-glow);
+            padding: 35px;
+            border-radius: 24px;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+            animation: breathe 8s ease-in-out infinite;
+        }
+
+        @keyframes breathe {
+            0%, 100% { transform: scale(1); box-shadow: 0 20px 50px rgba(0,0,0,0.4); }
+            50% { transform: scale(1.01); box-shadow: 0 20px 60px rgba(0, 255, 240, 0.1); }
+        }
+
+        .ambient-quote {
+            font-size: 16px;
+            line-height: 1.8;
+            font-weight: 300;
+            letter-spacing: 0.5px;
+            margin-bottom: 20px;
+            min-height: 60px;
+            transition: opacity 0.5s;
+        }
+
+        .shuffle-btn {
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.2);
+            color: #94a3b8;
+            padding: 8px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 12px;
+            letter-spacing: 1px;
+            transition: all 0.3s;
+        }
+
+        .shuffle-btn:hover {
+            color: #fff;
+            border-color: rgba(255,255,255,0.6);
+        }
+
+        /* BOTTOM CONTROL BAR */
+        .dashboard-dock {
+            background: var(--bg-blur);
+            border: 1px solid var(--border-glow);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            max-width: 700px;
+            margin: 0 auto;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .control-group label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #64748b;
+            font-weight: bold;
+        }
+
+        .dock-select {
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid #1e293b;
+            color: #fff;
+            padding: 8px 16px;
+            border-radius: 10px;
+            outline: none;
+            cursor: pointer;
+            font-size: 13px;
+        }
+
+        /* WEB AUDIO WAVE ANIMATION MOCK */
+        .audio-pulse {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            height: 20px;
+        }
+
+        .pulse-bar {
+            width: 3px;
+            height: 100%;
+            background-color: rgba(0, 255, 240, 0.6);
+            animation: jump 1.2s ease-in-out infinite alternate;
+        }
+        .pulse-bar:nth-child(2) { animation-delay: 0.3s; }
+        .pulse-bar:nth-child(3) { animation-delay: 0.6s; }
+
+        @keyframes jump {
+            0% { transform: scaleY(0.2); }
+            100% { transform: scaleY(1); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="room-bg vibe-rain" id="roomEnv"></div>
+
+    <div class="room-overlay">
+        <header>
+            <h1>LUMORA</h1>
+        </header>
+
+        <div class="center-sanctuary">
+            <div class="ambient-quote" id="quoteText">
+                "The noise of the outside world drops to absolute zero here. You are completely safe to just exist."
+            </div>
+            <button class="shuffle-btn" onclick="shuffleQuote()">Calm Mind Shift</button>
+        </div>
+
+        <div class="dashboard-dock">
+            <div class="control-group">
+                <label>Visual Space</label>
+                <select class="dock-select" id="envSelect" onchange="changeEnvironment()">
+                    <option value="vibe-rain">🌧️ Rainy Midnight Library</option>
+                    <option value="vibe-sunset">🌆 Cozy Twilight Corner</option>
+                    <option value="vibe-nebula">🌌 Deep Infinite Nebula</option>
+                </select>
+            </div>
+
+            <div class="control-group">
+                <label>Ambient Audio</label>
+                <select class="dock-select" id="audioSelect" onchange="simulateAudioChange()">
+                    <option value="rain">Soft Coffee-Shop Rain</option>
+                    <option value="lofi">Ethereal Low-Fidelity Chords</option>
+                    <option value="space">Cosmic Frequency Hum</option>
+                </select>
+            </div>
+
+            <div class="control-group" style="align-items: center;">
+                <label>Atmosphere Engine</label>
+                <div class="audio-pulse">
+                    <div class="pulse-bar"></div>
+                    <div class="pulse-bar"></div>
+                    <div class="pulse-bar"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const quotesPool = [
+            "\"The noise of the outside world drops to absolute zero here. You are completely safe to just exist.\"",
+            "\"Take a deep breath. No performance metrics. No notification chasing. Just a quiet corner for your thoughts.\"",
+            "\"It is okay to close the doors on everything else for tonight. This room doesn't require you to fix anything.\"",
+            "\"Let the racing thoughts slow down. Shadows drift, music settles, and the air grows light. Breathe.\"",
+            "\"You don't need to be productive here. You don't need a strategy. You just need to rest.\""
+        ];
+
+        function shuffleQuote() {
+            const quoteEl = document.getElementById('quoteText');
+            quoteEl.style.opacity = 0;
+            
+            setTimeout(() => {
+                const randomIdx = Math.floor(Math.random() * quotesPool.length);
+                quoteEl.innerText = quotesPool[randomIdx];
+                quoteEl.style.opacity = 1;
+            }, 400);
+        }
+
+        function changeEnvironment() {
+            const envValue = document.getElementById('envSelect').value;
+            const bgContainer = document.getElementById('roomEnv');
+            
+            // Clean slate assignment structure
+            bgContainer.className = `room-bg ${envValue}`;
+        }
+
+        function simulateAudioChange() {
+            const audioType = document.getElementById('audioSelect').value;
+            // Real apps initialize HTML5 audio elements here. 
+            // We flash a confirmation indicator to demonstrate immediate feedback loops.
+            console.log(`Lumora Audio Engine reassigned sound profile to: ${audioType}`);
+        }
+    </script>
+</body>
+</html>

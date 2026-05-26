@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Noctis - The Midnight Digital Sanctuary</title>
+    <style>
+        :root {
+            --bg-twilight: #05060f;
+            --bg-card: #0b0d1a;
+            --neon-blue: #00e5ff;
+            --neon-purple: #9d4edd;
+            --text-glow: #e0e4f3;
+            --muted-star: #475569;
+            --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-twilight);
+            color: var(--text-glow);
+            font-family: var(--font-sans);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow-x: hidden;
+        }
+
+        /* SIMULATION OVERLAY LOGIC BAR */
+        .admin-sim-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(11, 13, 26, 0.9);
+            border-bottom: 1px solid #1e293b;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            font-size: 12px;
+        }
+
+        .sim-btn {
+            background: linear-gradient(45deg, var(--neon-blue), var(--neon-purple));
+            color: white;
+            border: none;
+            padding: 5px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        /* SCREEN STATE 1: LOCKED (DAYTIME) */
+        .lockout-view {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px;
+            max-width: 450px;
+            z-index: 10;
+        }
+
+        .lockout-view h1 {
+            font-size: 36px;
+            letter-spacing: 4px;
+            margin-bottom: 10px;
+            background: linear-gradient(to right, #fff, #64748b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .countdown-clock {
+            font-size: 24px;
+            color: var(--neon-blue);
+            font-family: monospace;
+            text-shadow: 0 0 10px rgba(0, 229, 255, 0.4);
+            margin: 20px 0;
+        }
+
+        .lockout-sub {
+            color: var(--muted-star);
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        /* SCREEN STATE 2: ACTIVE (NIGHTTIME FEED) */
+        .portal-view {
+            width: 100%;
+            max-width: 600px;
+            margin-top: 60px;
+            padding: 20px;
+            display: none; /* Controlled via state algorithm */
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .portal-header {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .portal-header h2 {
+            font-size: 24px;
+            letter-spacing: 2px;
+            margin: 0;
+            background: linear-gradient(45deg, #fff, var(--neon-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .portal-header p {
+            color: #64748b;
+            font-size: 13px;
+            margin-top: 5px;
+        }
+
+        .confession-box {
+            background-color: var(--bg-card);
+            border: 1px solid #1e2640;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .confession-box textarea {
+            width: 100%;
+            height: 90px;
+            background: transparent;
+            border: none;
+            color: var(--text-glow);
+            font-size: 15px;
+            outline: none;
+            resize: none;
+            font-family: var(--font-sans);
+        }
+
+        .box-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+            border-top: 1px solid #141b30;
+            padding-top: 15px;
+        }
+
+        .vibe-indicator {
+            font-size: 12px;
+            color: #475569;
+        }
+
+        .release-btn {
+            background: transparent;
+            border: 1px solid var(--neon-purple);
+            color: #c084fc;
+            padding: 8px 20px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.3s;
+        }
+
+        .release-btn:hover {
+            background: rgba(157, 78, 221, 0.15);
+            box-shadow: 0 0 15px rgba(157, 78, 221, 0.4);
+        }
+
+        /* FEED POSTS */
+        .feed-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .atmosphere-card {
+            background: linear-gradient(135deg, #0b0d1a, #070912);
+            border-left: 3px solid var(--neon-blue);
+            border-top: 1px solid #141b30;
+            border-right: 1px solid #141b30;
+            border-bottom: 1px solid #141b30;
+            padding: 20px;
+            border-radius: 0 12px 12px 0;
+            line-height: 1.6;
+            font-size: 14.5px;
+            animation: driftIn 0.5s ease-out;
+            position: relative;
+        }
+
+        .card-timestamp {
+            font-size: 11px;
+            color: #334155;
+            margin-top: 10px;
+            text-align: right;
+            font-family: monospace;
+        }
+
+        @keyframes driftIn {
+            from { opacity: 0; transform: translateY(10px); filter: blur(4px); }
+            to { opacity: 1; transform: translateY(0); filter: blur(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="admin-sim-bar">
+        <div><strong>Noctis Engine:</strong> Real-time Scarcity Filter Validation System</div>
+        <button class="sim-btn" id="toggleSimBtn">Simulate Midnight (Force Unlock)</button>
+    </div>
+
+    <div class="lockout-view" id="lockoutContainer">
+        <div style="font-size: 40px; margin-bottom: 10px;">☀️</div>
+        <h1>NOCTIS</h1>
+        <div class="lockout-sub">The gates are closed. Noctis is a sanctuary that only awakens when the world goes quiet.</div>
+        <div class="countdown-clock" id="countdownTimer">00:00:00</div>
+        <div class="lockout-sub" style="opacity: 0.5;">Opens daily at 22:00 (10 PM) until 06:00 AM</div>
+    </div>
+
+    <div class="portal-view" id="portalContainer">
+        <div class="portal-header">
+            <h2>NOCTIS PORTAL</h2>
+            <p>Welcome to the quiet end of the internet. Speak gently.</p>
+        </div>
+
+        <div class="confession-box">
+            <textarea id="confessionInput" placeholder="What's sitting heavily on your mind right now? Release it anonymously..."></textarea>
+            <div class="box-actions">
+                <div class="vibe-indicator">✨ Pure Ambient Architecture</div>
+                <button class="release-btn" id="submitConfession">Release to the Night</button>
+            </div>
+        </div>
+
+        <div class="feed-container" id="feedContainer">
+            <div class="atmosphere-card">
+                it feels weird knowing everyone else in the city is fast asleep right now while i am just staring
